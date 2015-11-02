@@ -1,4 +1,4 @@
-package cz.muni.fi.Event;
+package cz.muni.fi.event;
 
 import java.util.Objects;
 

@@ -1,8 +1,8 @@
 package cz.muni.fi.generator;
 
-import cz.muni.fi.Event.Event;
-import cz.muni.fi.Event.HIVEvent;
-import cz.muni.fi.Event.HIVStage;
+import cz.muni.fi.event.Event;
+import cz.muni.fi.event.HIVEvent;
+import cz.muni.fi.event.HIVStage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

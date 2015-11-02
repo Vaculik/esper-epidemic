@@ -1,6 +1,6 @@
 package cz.muni.fi.generator;
 
-import cz.muni.fi.Event.Event;
+import cz.muni.fi.event.Event;
 
 import java.util.List;
 

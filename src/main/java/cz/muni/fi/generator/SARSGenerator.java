@@ -1,7 +1,7 @@
 package cz.muni.fi.generator;
 
-import cz.muni.fi.Event.Event;
-import cz.muni.fi.Event.SARSEvent;
+import cz.muni.fi.event.Event;
+import cz.muni.fi.event.SARSEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,6 +17,7 @@ public class SARSGenerator implements Generator {
     private static final Logger logger = LoggerFactory.getLogger(SARSGenerator.class);
     private static final Random random = new Random(System.currentTimeMillis());
     public static final double MORTALITY = 0.07;
+    public static final int EPIDEMIC_INDICATION_BOUND = 5;
     private Epidemic epidemic = null;
 
     public List<Event> generateNextRound() {

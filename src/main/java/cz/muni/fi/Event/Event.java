@@ -1,4 +1,4 @@
-package cz.muni.fi.Event;
+package cz.muni.fi.event;
 
 /**
  * Created by vaculik on 31.10.15.
