@@ -1,0 +1,13 @@
+# folders with compiled classes
+/target
+/out
+
+# all html files
+*.html
+
+# idea workspace settings
+workspace.xml
+tasks.xml
+.idea/
+
+*~
