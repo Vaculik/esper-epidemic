@@ -13,7 +13,7 @@ public class MortalityStatement {
 
     public MortalityStatement(EPServiceProvider serviceProvider) {
         String expr = "expression winLength alias for {20}" +
-                      "select count(*) / winLength as avgMortality " +
+                      "select count(*) / winLength * 100 as avgMortality " +
                       "from Disease.win:length(winLength) " +
                       "where death = true " +
                       "having (count(*) / winLength) > (0.01 + " + DiseaseGenerator.MORTALITY + ")";

@@ -5,7 +5,7 @@ import java.util.Objects;
 /**
  * Created by vaculik on 30.10.15.
  */
-public class DiseaseEvent implements Event{
+public class DiseaseEvent {
 
     private int locationX;
     private int locationY;
@@ -77,6 +77,6 @@ public class DiseaseEvent implements Event{
 
     @Override
     public String toString() {
-        return "DiseaseEvent: X=" + locationX + " Y=" + locationY + " death=" + death + " type=" + type;
+        return "DiseaseEvent: location=[" + locationX + "," + locationY + "] death=" + death + " type=" + type;
     }
 }

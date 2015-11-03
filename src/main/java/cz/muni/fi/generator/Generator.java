@@ -1,6 +1,6 @@
 package cz.muni.fi.generator;
 
-import cz.muni.fi.event.Event;
+import cz.muni.fi.EventTimeRound;
 
 import java.util.List;
 
@@ -14,5 +14,5 @@ public interface Generator {
     int EPIDEMIC_RANGE = 50;
     double EPIDEMIC_START_CHANCE = 0.05;
 
-    List<Event> generateNextRound();
+    EventTimeRound generateNextTimeRound();
 }

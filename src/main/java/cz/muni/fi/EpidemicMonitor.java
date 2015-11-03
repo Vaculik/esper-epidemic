@@ -1,15 +1,15 @@
 package cz.muni.fi;
 
 import com.espertech.esper.client.*;
-import cz.muni.fi.event.Event;
 import cz.muni.fi.event.DiseaseEvent;
 import cz.muni.fi.event.NewDiseaseType;
 import cz.muni.fi.generator.Generator;
-import cz.muni.fi.generator.HIVGenerator;
 import cz.muni.fi.generator.DiseaseGenerator;
 import cz.muni.fi.statement.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 
 /**
@@ -20,28 +20,29 @@ public class EpidemicMonitor {
     private static final Logger logger = LoggerFactory.getLogger(EpidemicMonitor.class);
     private static final long DEFAULT_DELAY = 200L;
     private EPServiceProvider serviceProvider;
-    private final Generator hivGenerator = new HIVGenerator();
-    private final Generator sarsGenerator = new DiseaseGenerator();
+
+    private ResultsListener epidemicResults;
+    private ResultsListener mortalityResults;
+    private ResultsListener newTypeResults;
 
     public EpidemicMonitor() {
         logger.debug("Create and configure EPServiceProvider.");
         Configuration config = new Configuration();
-//        config.addEventType("HIV", HIVEvent.class);
         config.addEventType("Disease", DiseaseEvent.class);
         config.addEventType("NewType", NewDiseaseType.class);
         serviceProvider = EPServiceProviderManager.getProvider(EpidemicMonitor.class.getName(), config);
     }
 
 
-    public void start(int numOfRounds) {
-        start(numOfRounds, DEFAULT_DELAY);
+    public void startProcessing(List<EventTimeRound> timeRounds) {
+        startProcessing(timeRounds, DEFAULT_DELAY);
     }
 
-    public void start(int numOfRounds, long delay) {
-        if (numOfRounds <= 0) {
-            String msg = "Parameter numOfRounds must be positive.";
+    public void startProcessing(List<EventTimeRound> timeRounds, long delay) {
+        if (timeRounds == null) {
+            String msg = "Parameter timeRounds is null.";
             logger.warn(msg);
-            throw new IllegalArgumentException(msg);
+            throw new NullPointerException(msg);
         }
         if (delay <= 0) {
             String msg = "Parameter delay must be positive.";
@@ -53,9 +54,13 @@ public class EpidemicMonitor {
 
         logger.debug("Create EPRuntime and start processing of events.");
         EPRuntime runtime = serviceProvider.getEPRuntime();
-        for (int i = 0; i < numOfRounds; i++) {
-//            processEvents(hivGenerator, runtime, HIVEvent.class);
-            processEvents(sarsGenerator, runtime, DiseaseEvent.class);
+        for (int i = 0; i < timeRounds.size(); i++) {
+            for (Object o : timeRounds.get(i)) {
+                DiseaseEvent event = (DiseaseEvent) o;
+
+                logger.debug(event.toString());
+                runtime.sendEvent(event);
+            }
             try {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
@@ -64,30 +69,37 @@ public class EpidemicMonitor {
         }
     }
 
-    private <T extends Event> void processEvents(Generator generator, EPRuntime runtime, Class<T> c) {
-        for (Object o : generator.generateNextRound()) {
-            T event = c.cast(o);
-
-            logger.debug(event.toString());
-            runtime.sendEvent(event);
-        }
-    }
 
     private void initStatements(long delay) {
         logger.debug("Create EpidemicStatement and appropriate listeners.");
         EpidemicStatement epidemicStatement = new EpidemicStatement(serviceProvider, delay);
-        epidemicStatement.addListener(new EpidemicListener());
+        epidemicResults = new ResultsListener();
+        epidemicStatement.addListener(new EpidemicListener(epidemicResults));
 
         logger.debug("Create MortalityStatement and appropriate listeners.");
         MortalityStatement mortalityStatement = new MortalityStatement(serviceProvider);
-        mortalityStatement.addListener(new MortalityListener());
+        mortalityResults = new ResultsListener();
+        mortalityStatement.addListener(new MortalityListener(mortalityResults));
 
         logger.debug("Create NewTypeStatement and appropriate listeners");
         NewTypeStatement newTypeStatement = new NewTypeStatement(serviceProvider);
-        newTypeStatement.addListener(new NewTypeListener());
+        newTypeResults = new ResultsListener();
+        newTypeStatement.addListener(new NewTypeListener(newTypeResults));
     }
 
-    public void closeServiceProvider() {
+    public ResultsListener getEpidemicResults() {
+        return epidemicResults;
+    }
+
+    public ResultsListener getMortalityResults() {
+        return mortalityResults;
+    }
+
+    public ResultsListener getNewTypeResults() {
+        return  newTypeResults;
+    }
+
+    public void destroyServiceProvider() {
         logger.debug("Destroy EPServiceProvider.");
         serviceProvider.destroy();
     }

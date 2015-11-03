@@ -1,7 +1,7 @@
 package cz.muni.fi.generator;
 
+import cz.muni.fi.EventTimeRound;
 import cz.muni.fi.event.DiseaseEvent;
-import cz.muni.fi.event.Event;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,19 +24,34 @@ public class DiseaseGenerator implements Generator {
     private int numOfTypes = 1;
     private static final double NEW_TYPE_CHANCE = 0.02;
 
-    public List<Event> generateNextRound() {
-        List<Event> events = new LinkedList<>();
+
+    public List<EventTimeRound> generateTimeRounds(int numOfRounds) {
+        if (numOfRounds <= 0) {
+            String msg = "Parameter numOfRounds must be positive.";
+            logger.warn(msg);
+            throw new IllegalArgumentException(msg);
+        }
+
+        List<EventTimeRound> timeRounds = new LinkedList<>();
+        for (int i = 0; i < numOfRounds; i++) {
+            timeRounds.add(generateNextTimeRound());
+        }
+        return timeRounds;
+    }
+
+    public EventTimeRound generateNextTimeRound() {
+        EventTimeRound events = new EventTimeRound();
 
         if (random.nextDouble() < 0.3) {
             DiseaseEvent event = createDiseaseEvent();
             if (epidemic == null && random.nextDouble() < EPIDEMIC_START_CHANCE) {
                 epidemic = new Epidemic(event.getLocationX(), event.getLocationY());
             }
-            events.add(event);
+            events.addEvent(event);
         }
 
         if (epidemic != null) {
-            events.addAll(epidemic.generateDiseases());
+            events.addAllEvents(epidemic.generateDiseases());
             if (epidemic.isFinished()) {
                 epidemic = null;
             }
@@ -102,14 +117,14 @@ public class DiseaseGenerator implements Generator {
             return finished;
         }
 
-        public List<Event> generateDiseases() {
+        public List<Object> generateDiseases() {
             if (finished) {
                 String msg = "Epidemic is over, cannot generate another disease events.";
                 logger.warn(msg);
                 throw new IllegalStateException(msg);
             }
 
-            List<Event> events = new LinkedList<>();
+            List<Object> events = new LinkedList<>();
             int numOfNewEvents = random.nextInt(3) + 1;
             for (int i = 0; i < numOfNewEvents; i++) {
                 events.add(createDiseaseEvent(locationX, locationY));
