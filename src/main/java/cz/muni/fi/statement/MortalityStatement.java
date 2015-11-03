@@ -14,7 +14,7 @@ public class MortalityStatement {
     public MortalityStatement(EPServiceProvider serviceProvider) {
         String expr = "expression winLength alias for {20}" +
                       "select count(*) / winLength as avgMortality " +
-                      "from SARS.win:length(winLength) " +
+                      "from Disease.win:length(winLength) " +
                       "where death = true " +
                       "having (count(*) / winLength) > (0.01 + " + DiseaseGenerator.MORTALITY + ")";
         statement = serviceProvider.getEPAdministrator().createEPL(expr);

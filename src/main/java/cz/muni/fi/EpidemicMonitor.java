@@ -2,15 +2,12 @@ package cz.muni.fi;
 
 import com.espertech.esper.client.*;
 import cz.muni.fi.event.Event;
-import cz.muni.fi.event.HIVEvent;
 import cz.muni.fi.event.DiseaseEvent;
+import cz.muni.fi.event.NewDiseaseType;
 import cz.muni.fi.generator.Generator;
 import cz.muni.fi.generator.HIVGenerator;
 import cz.muni.fi.generator.DiseaseGenerator;
-import cz.muni.fi.statement.EpidemicListener;
-import cz.muni.fi.statement.EpidemicStatement;
-import cz.muni.fi.statement.MortalityListener;
-import cz.muni.fi.statement.MortalityStatement;
+import cz.muni.fi.statement.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +26,9 @@ public class EpidemicMonitor {
     public EpidemicMonitor() {
         logger.debug("Create and configure EPServiceProvider.");
         Configuration config = new Configuration();
-        config.addEventType("HIV", HIVEvent.class);
-        config.addEventType("SARS", DiseaseEvent.class);
+//        config.addEventType("HIV", HIVEvent.class);
+        config.addEventType("Disease", DiseaseEvent.class);
+        config.addEventType("NewType", NewDiseaseType.class);
         serviceProvider = EPServiceProviderManager.getProvider(EpidemicMonitor.class.getName(), config);
     }
 
@@ -56,7 +54,7 @@ public class EpidemicMonitor {
         logger.debug("Create EPRuntime and start processing of events.");
         EPRuntime runtime = serviceProvider.getEPRuntime();
         for (int i = 0; i < numOfRounds; i++) {
-            processEvents(hivGenerator, runtime, HIVEvent.class);
+//            processEvents(hivGenerator, runtime, HIVEvent.class);
             processEvents(sarsGenerator, runtime, DiseaseEvent.class);
             try {
                 Thread.sleep(delay);
@@ -76,13 +74,17 @@ public class EpidemicMonitor {
     }
 
     private void initStatements(long delay) {
-        logger.debug("Create EpidemicStatement and add appropriate listeners.");
+        logger.debug("Create EpidemicStatement and appropriate listeners.");
         EpidemicStatement epidemicStatement = new EpidemicStatement(serviceProvider, delay);
         epidemicStatement.addListener(new EpidemicListener());
 
-        logger.debug("Create MortalityStatement and add appropriate listeners.");
+        logger.debug("Create MortalityStatement and appropriate listeners.");
         MortalityStatement mortalityStatement = new MortalityStatement(serviceProvider);
         mortalityStatement.addListener(new MortalityListener());
+
+        logger.debug("Create NewTypeStatement and appropriate listeners");
+        NewTypeStatement newTypeStatement = new NewTypeStatement(serviceProvider);
+        newTypeStatement.addListener(new NewTypeListener());
     }
 
     public void closeServiceProvider() {

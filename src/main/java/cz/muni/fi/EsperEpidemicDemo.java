@@ -13,6 +13,6 @@ public class EsperEpidemicDemo
     public static void main( String[] args )
     {
         EpidemicMonitor monitor = new EpidemicMonitor();
-        monitor.start(100);
+        monitor.start(1000, 100);
     }
 }

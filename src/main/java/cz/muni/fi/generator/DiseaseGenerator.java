@@ -19,6 +19,11 @@ public class DiseaseGenerator implements Generator {
     public static final double MORTALITY = 0.07;
     private Epidemic epidemic = null;
 
+    private final String typePrefix = "TYPE_";
+    private final char baseType = 'A';
+    private int numOfTypes = 1;
+    private static final double NEW_TYPE_CHANCE = 0.02;
+
     public List<Event> generateNextRound() {
         List<Event> events = new LinkedList<>();
 
@@ -45,6 +50,7 @@ public class DiseaseGenerator implements Generator {
         event.setLocationX(random.nextInt(MAX_COORD_X));
         event.setLocationY(random.nextInt(MAX_COORD_Y));
         event.setDeath(random.nextDouble() < MORTALITY);
+        event.setType(getRandomType());
         return event;
     }
 
@@ -68,7 +74,17 @@ public class DiseaseGenerator implements Generator {
         event.setLocationY(locationY);
 
         event.setDeath(random.nextDouble() < MORTALITY);
+        event.setType(getRandomType());
+
         return event;
+    }
+
+    private String getRandomType() {
+        int baseTypeShift = random.nextInt(numOfTypes);
+        if (numOfTypes <= ('Z' - 'A') && random.nextDouble() < NEW_TYPE_CHANCE) {
+            numOfTypes++;
+        }
+        return typePrefix + (char) (baseType + baseTypeShift);
     }
 
     private class Epidemic {

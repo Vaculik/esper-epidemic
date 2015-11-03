@@ -14,12 +14,12 @@ public class EpidemicStatement {
 
     public EpidemicStatement(EPServiceProvider serviceProvider, long delay) {
         String expr = "select count(*) as count, lst.locationX as locationX, lst.locationY as locationY " +
-                      "from SARS(exists (select * " +
-                                "from SARS.std:lastevent() as l " +
-                                "where Math.abs(sr.locationX - l.locationX) <" + Generator.EPIDEMIC_RANGE + " * 2 and " +
-                                      "Math.abs(sr.locationY - l.locationY) <" + Generator.EPIDEMIC_RANGE + " * 2))" +
-                            ".win:time(" + (delay*5) + " msec) as sr, " +
-                            "SARS.std:lastevent() as lst " +
+                      "from Disease(exists (select * " +
+                                "from Disease.std:lastevent() as l " +
+                                "where Math.abs(dis.locationX - l.locationX) <" + Generator.EPIDEMIC_RANGE + " * 2 and " +
+                                      "Math.abs(dis.locationY - l.locationY) <" + Generator.EPIDEMIC_RANGE + " * 2))" +
+                            ".win:time(" + (delay*5) + " msec) as dis, " +
+                            "Disease.std:lastevent() as lst " +
                       "having count(*) >= " + EPIDEMIC_INDICATION_BOUND;
 
 //        String expr = "select count(*) as count, l.locationX as locationX, l.locationY as locationY " +
