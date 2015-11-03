@@ -7,7 +7,7 @@
   <version>1.0</version>
   <packaging>jar</packaging>
 
-  <name>esper-epidemic</name>
+  <name>EsperEpidemic</name>
   <url>http://maven.apache.org</url>
 
   <properties>

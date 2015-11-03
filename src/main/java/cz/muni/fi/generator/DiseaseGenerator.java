@@ -1,7 +1,7 @@
 package cz.muni.fi.generator;
 
+import cz.muni.fi.event.DiseaseEvent;
 import cz.muni.fi.event.Event;
-import cz.muni.fi.event.SARSEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,19 +12,18 @@ import java.util.Random;
 /**
  * Created by vaculik on 31.10.15.
  */
-public class SARSGenerator implements Generator {
+public class DiseaseGenerator implements Generator {
 
-    private static final Logger logger = LoggerFactory.getLogger(SARSGenerator.class);
+    private static final Logger logger = LoggerFactory.getLogger(DiseaseGenerator.class);
     private static final Random random = new Random(System.currentTimeMillis());
     public static final double MORTALITY = 0.07;
-    public static final int EPIDEMIC_INDICATION_BOUND = 5;
     private Epidemic epidemic = null;
 
     public List<Event> generateNextRound() {
         List<Event> events = new LinkedList<>();
 
         if (random.nextDouble() < 0.3) {
-            SARSEvent event = createSARSEvent();
+            DiseaseEvent event = createDiseaseEvent();
             if (epidemic == null && random.nextDouble() < EPIDEMIC_START_CHANCE) {
                 epidemic = new Epidemic(event.getLocationX(), event.getLocationY());
             }
@@ -32,7 +31,7 @@ public class SARSGenerator implements Generator {
         }
 
         if (epidemic != null) {
-            events.addAll(epidemic.generateSARS());
+            events.addAll(epidemic.generateDiseases());
             if (epidemic.isFinished()) {
                 epidemic = null;
             }
@@ -41,16 +40,16 @@ public class SARSGenerator implements Generator {
         return events;
     }
 
-    private SARSEvent createSARSEvent() {
-        SARSEvent event = new SARSEvent();
+    private DiseaseEvent createDiseaseEvent() {
+        DiseaseEvent event = new DiseaseEvent();
         event.setLocationX(random.nextInt(MAX_COORD_X));
         event.setLocationY(random.nextInt(MAX_COORD_Y));
         event.setDeath(random.nextDouble() < MORTALITY);
         return event;
     }
 
-    private SARSEvent createSARSEvent(int x, int y) {
-        SARSEvent event = new SARSEvent();
+    private DiseaseEvent createDiseaseEvent(int x, int y) {
+        DiseaseEvent event = new DiseaseEvent();
 
         int locationX = random.nextInt(2 * EPIDEMIC_RANGE) + (x - EPIDEMIC_RANGE);
         if (locationX < 0) {
@@ -87,9 +86,9 @@ public class SARSGenerator implements Generator {
             return finished;
         }
 
-        public List<Event> generateSARS() {
+        public List<Event> generateDiseases() {
             if (finished) {
-                String msg = "Epidemic is over, cannot generate another SARS events.";
+                String msg = "Epidemic is over, cannot generate another disease events.";
                 logger.warn(msg);
                 throw new IllegalStateException(msg);
             }
@@ -97,7 +96,7 @@ public class SARSGenerator implements Generator {
             List<Event> events = new LinkedList<>();
             int numOfNewEvents = random.nextInt(3) + 1;
             for (int i = 0; i < numOfNewEvents; i++) {
-                events.add(createSARSEvent(locationX, locationY));
+                events.add(createDiseaseEvent(locationX, locationY));
             }
             finished = random.nextDouble() < EPIDEMIC_END_RATE;
             return events;

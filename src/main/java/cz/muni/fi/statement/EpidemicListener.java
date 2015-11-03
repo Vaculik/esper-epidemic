@@ -6,7 +6,7 @@ import com.espertech.esper.client.UpdateListener;
 /**
  * Created by Vaculik on 02/11/2015.
  */
-public class SARSEpidemicListener implements UpdateListener {
+public class EpidemicListener implements UpdateListener {
 
     @Override
     public void update(EventBean[] newBeans, EventBean[] oldBeans) {
