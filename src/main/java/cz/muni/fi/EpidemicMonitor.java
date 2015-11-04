@@ -50,7 +50,7 @@ public class EpidemicMonitor {
             throw new IllegalArgumentException(msg);
         }
 
-        initStatements(delay);
+        initStatements();
 
         logger.debug("Create EPRuntime and start processing of events.");
         EPRuntime runtime = serviceProvider.getEPRuntime();
@@ -67,12 +67,15 @@ public class EpidemicMonitor {
                 logger.warn("Interrupted when was processing events.", e);
             }
         }
+        logger.info("Number of EpidemicStatement results: " + epidemicResults.getNumOfResults());
+        logger.info("Number of MortalityStatement results: " + mortalityResults.getNumOfResults());
+        logger.info("Number of NewTypeStatement results: " + newTypeResults.getNumOfResults());
     }
 
 
-    private void initStatements(long delay) {
+    private void initStatements() {
         logger.debug("Create EpidemicStatement and appropriate listeners.");
-        EpidemicStatement epidemicStatement = new EpidemicStatement(serviceProvider, delay);
+        EpidemicStatement epidemicStatement = new EpidemicStatement(serviceProvider);
         epidemicResults = new ResultsListener();
         epidemicStatement.addListener(new EpidemicListener(epidemicResults));
 
