@@ -44,8 +44,8 @@ public class EpidemicMonitor {
             logger.warn(msg);
             throw new NullPointerException(msg);
         }
-        if (delay <= 0) {
-            String msg = "Parameter delay must be positive.";
+        if (delay < 0) {
+            String msg = "Parameter delay cannot be negative.";
             logger.warn(msg);
             throw new IllegalArgumentException(msg);
         }
