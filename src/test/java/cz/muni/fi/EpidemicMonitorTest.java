@@ -97,7 +97,7 @@ public class EpidemicMonitorTest {
     }
 
     @Test
-    public void moreTypes() {
+    public void threeTypes() {
         DiseaseEvent event;
         round.addEvent(createDefaultEvent());
         event = createDefaultEvent();
