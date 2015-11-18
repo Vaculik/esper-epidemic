@@ -62,7 +62,7 @@ public class EpidemicMonitorTest {
         }
         monitor.startProcessing(eventRounds, 0);
 
-        assertEquals(1, monitor.getEpidemicResults().getNumOfResults());
+        assertEquals(2, monitor.getEpidemicResults().getNumOfResults());
     }
 
     @Test
