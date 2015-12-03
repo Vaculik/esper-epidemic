@@ -26,11 +26,7 @@ public class EpidemicMonitor {
     private ResultsListener newTypeResults;
 
     public EpidemicMonitor() {
-        logger.debug("Create and configure EPServiceProvider.");
-        Configuration config = new Configuration();
-        config.addEventType("Disease", DiseaseEvent.class);
-        config.addEventType("NewType", NewDiseaseType.class);
-        serviceProvider = EPServiceProviderManager.getProvider(EpidemicMonitor.class.getName(), config);
+        serviceProvider = EPServiceProviderManager.getProvider(EpidemicMonitor.class.getName());
     }
 
 
