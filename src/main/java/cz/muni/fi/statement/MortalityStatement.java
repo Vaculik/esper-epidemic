@@ -17,7 +17,7 @@ public class MortalityStatement {
                       "from Disease.win:length(winLength) " +
                       "where death=true " +
                       "having death=true AND (count(*) / winLength) > (0.01 + " + DiseaseGenerator.MORTALITY + ")";
-        statement = serviceProvider.getEPAdministrator().createEPL(expr);
+        statement = serviceProvider.getEPAdministrator().createEPL(expr, "MortalityStatement");
     }
 
     public void addListener(UpdateListener listener) {

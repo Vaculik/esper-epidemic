@@ -15,7 +15,7 @@ public class NewTypeStatement {
                       "select dis.type as type " +
                       "from Disease(dis.type not in (select type from NewType.std:unique(type))) as dis ";
 
-        statement = serviceProvider.getEPAdministrator().createEPL(expr);
+        statement = serviceProvider.getEPAdministrator().createEPL(expr, "NewTypeStatement");
     }
 
     public void addListener(UpdateListener listener) {

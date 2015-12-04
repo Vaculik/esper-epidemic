@@ -3,19 +3,24 @@
                      xmlns="http://www.espertech.com/schema/esper"
                      xsi:schemaLocation="
 http://www.espertech.com/schema/esper
-http://www.espertech.com/schema/esper/esper-configuration-2.0.xsd">
+http://www.espertech.com/schema/esper/esper-configuration-5-0.xsd">
     <event-type name="Disease" class="cz.muni.fi.event.DiseaseEvent"/>
-    <!--<event-type name="NewType" class="cz.muni.fi.event.NewDiseaseType"/>-->
+    <event-type name="NewType" class="cz.muni.fi.event.NewDiseaseType"/>
+    <event-type name="EngineMetric" class="com.espertech.esper.client.metric.EngineMetric"/>
+    <event-type name="StatementMetric" class="com.espertech.esper.client.metric.StatementMetric"/>
     <engine-settings>
         <defaults>
-            <metrics-reporting jmx-engine-metrics="true"/>
-            <!--<metrics-reporting enabled="true" engine-interval="1000" statement-interval="1000"-->
-                               <!--threading="true"/>-->
+            <metrics-reporting enabled="true" engine-interval="1000" statement-interval="1000"
+                               threading="true"/>
         </defaults>
     </engine-settings>
-    <!--<plugin-loader name="EsperIOHTTPAdapter"-->
-                   <!--class-name="com.espertech.esperio.http.EsperIOHTTPAdapterPlugin">-->
-        <!--<init-arg name="esperio.http.configuration.file"-->
-                  <!--value="file:esperio-http-sample-config.xml" />-->
-    <!--</plugin-loader>-->
+    <plugin-loader name="EsperIOHTTPAdapter"
+                   class-name="com.espertech.esperio.http.EsperIOHTTPAdapterPlugin">
+        <config-xml>
+            <esperio-http-configuration>
+                <request stream="EngineMetric" uri="http://localhost:8000/root/event"/>
+                <request stream="StatementMetric" uri="http://localhost:8000/root/event"/>
+            </esperio-http-configuration>
+        </config-xml>
+    </plugin-loader>
 </esper-configuration>

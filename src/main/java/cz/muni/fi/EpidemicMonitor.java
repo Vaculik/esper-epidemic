@@ -26,7 +26,10 @@ public class EpidemicMonitor {
     private ResultsListener newTypeResults;
 
     public EpidemicMonitor() {
-        serviceProvider = EPServiceProviderManager.getProvider(EpidemicMonitor.class.getName());
+        Configuration configuration = new Configuration();
+        configuration.configure();
+
+        serviceProvider = EPServiceProviderManager.getProvider(EpidemicMonitor.class.getName(), configuration);
     }
 
 

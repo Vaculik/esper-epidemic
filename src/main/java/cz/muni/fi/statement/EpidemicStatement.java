@@ -30,7 +30,7 @@ public class EpidemicStatement {
                 "having count(*) >= " + EPIDEMIC_INDICATION_BOUND;
 
 
-        statement = serviceProvider.getEPAdministrator().createEPL(expr);
+        statement = serviceProvider.getEPAdministrator().createEPL(expr, "EpidemicStatement");
     }
 
     public void addListener(UpdateListener listener) {
